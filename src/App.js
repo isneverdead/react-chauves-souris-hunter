@@ -1,6 +1,7 @@
 // Import dependencies
 import React, { useRef, useState } from "react";
-// import * as tf from "@tensorflow/tfjs";
+// eslint-disable-next-line
+import * as tf from "@tensorflow/tfjs";
 // 1. TODO - Import required model here
 import * as cocossd from "@tensorflow-models/coco-ssd";
 // e.g. import * as tfmodel from "@tensorflow-models/tfmodel";
@@ -14,6 +15,8 @@ function App() {
   const canvasRef = useRef(null);
   const [benda, setBenda] = useState('');
   const [gameState, setGameState] = useState('idle');
+  console.log('Using TensorFlow backend: ', tf.getBackend());
+
   // Main function
   const runCoco = async () => {
     // 3. TODO - Load network 
