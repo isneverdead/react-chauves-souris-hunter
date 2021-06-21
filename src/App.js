@@ -1,6 +1,6 @@
 // Import dependencies
-import React, { useRef, useState, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
+import React, { useRef, useState } from "react";
+// import * as tf from "@tensorflow/tfjs";
 // 1. TODO - Import required model here
 import * as cocossd from "@tensorflow-models/coco-ssd";
 // e.g. import * as tfmodel from "@tensorflow-models/tfmodel";
@@ -25,6 +25,7 @@ function App() {
     }, 10);
   };
   const detectBenda = (object) => {
+    // eslint-disable-next-line
     if(object == 'scissors') {
       console.log('ketemuuuuu')
       setGameState('end');
@@ -53,7 +54,7 @@ function App() {
       // 4. TODO - Make Detections
       // e.g. const obj = await net.detect(video);
       const obj = await net.detect(video);
-      
+      // eslint-disable-next-line
       if(obj.length != 0) {
         console.log(obj[0].class)
         setBenda(obj[0].class)
@@ -81,27 +82,32 @@ function App() {
     <div className="App">
       <div className="">
         {
+          // eslint-disable-next-line
           gameState == 'running' ? (
             <h1>Cari scissors</h1>
           ): null
         }
         {
+          // eslint-disable-next-line
           gameState == 'running' ? (
             <h1>ini bukan Scissors, ini {benda}</h1>
 
           ) : null
         }
          {
+           // eslint-disable-next-line
           gameState == 'end' ? (
             <h1>Berhasil</h1>
           ): null
         }
         {
+          // eslint-disable-next-line
           benda == 'scissors' ? <h1>Ketemu!!!!</h1> : null
         }
       </div>
       <div className="">
         {
+          // eslint-disable-next-line
           gameState == 'idle' ? (
             <button onClick={startGame} style={{
               paddingLeft: "1rem",
@@ -112,6 +118,7 @@ function App() {
           ) : null
         }
         {
+          // eslint-disable-next-line
           gameState == 'end' ? (
             <button onClick={startGame} style={{
               paddingLeft: "1rem",
@@ -124,6 +131,7 @@ function App() {
        
       </div>
       {
+        // eslint-disable-next-line
         gameState == 'running' ? (
           <header className="App-header">
         <Webcam
