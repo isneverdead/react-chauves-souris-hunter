@@ -1,25 +1,46 @@
 import { useState, useEffect } from 'react'
 
-const Counter = ({count}) => {
+const Counter = ({handleGameState}) => {
     const backgroundClasses = "flex w-full justify-center items-center h-screen"
     const [backgroundColor, setbackgroundColor] = useState('')
     const [counter, setCounter] = useState(3)
-
-    const changeBackground = (number) => {
-        if (number === 3) {
+    const countDown = () => {
+        setInterval(function(){
+            if(counter > 1) {
+                setCounter(counter - 1)
+            }
+            // console.log(counter)
+            if(counter == 1) {
+                
+                handleGameState('finding')
+                
+            } 
+         }, 1000);
+         
+    }
+    useEffect(() => {
+        // countDown()
+        // handleGameState('finding')
+    }, [])
+    const changeBackground = (counter) => {
+        if (counter === 3) {
             setbackgroundColor('bg-red-300')
-            setCounter(number)
-        } else if (number === 2) {
+            // setCounter(counter)
+        } else if (counter === 2) {
             setbackgroundColor('bg-yellow-300')
-            setCounter(number)
-        } else if (number === 1) {
+            // setCounter(counter)
+        } else if (counter === 1) {
             setbackgroundColor('bg-green-300')
-            setCounter(number)
+            // setCounter(counter)
         }
     }
     useEffect(() => {
-        changeBackground(count)
-    }, [count])
+        changeBackground(counter)
+        if(counter > 0) {
+            // console.log('executed')
+            countDown()
+        } 
+    }, [counter])
 
     
 

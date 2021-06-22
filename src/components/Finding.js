@@ -2,12 +2,13 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { useState, useRef, useEffect, useCallback } from 'react'
 
-const Finding = () => {
+const Finding = ({handleGameState}) => {
     const webcamRef = useRef(null);
     const canvasRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const isMountedVal = useRef(1);
     const [videoConstraints, setVideoConstraints] = useState({})
+    const [benda, setBenda] = useState('')
 
     const runCoco = async () => {
         // 3. TODO - Load network 
@@ -22,6 +23,11 @@ const Finding = () => {
           detect(net);
         }, 10);
       };
+    const detectbenda = (item) => {
+        if(item == 'scissors') {
+            handleGameState('end')
+        }
+    } 
     const detect = async (net) => {
     // Check data is available
     if (
@@ -48,10 +54,10 @@ const Finding = () => {
         // eslint-disable-next-line
         if(obj.length != 0) {
         console.log(obj[0].class)
-        // setBenda(obj[0].class)
-        // detectBenda(obj[0].class)
+        setBenda(obj[0].class)
+        detectBenda(obj[0].class)
         } else {
-        // setBenda('ga jelas bendanya')
+        setBenda('ga jelas bendanya')
 
         }
 
@@ -64,12 +70,12 @@ const Finding = () => {
     }
     };
     useEffect(() => {
-    runCoco()
-    changeCamera(true)
+        changeCamera(true)
+        runCoco()
     
     }, [])
     let facingCamera = true
-    const changeCamera = (isFacing = true) => {
+    const changeCamera = (isFacing) => {
         console.log(facingCamera)
         if (isFacing) {
           facingCamera = true
@@ -110,7 +116,7 @@ const Finding = () => {
 
                 />
                 <div className="absolute z-50 bottom-4 left-2 px-5 py-2 bg-white rounded-md">
-                    <h2 className="font-sans font-bold text-2xl text-gray-800">itu bukan scissors!</h2>
+                    <h2 className="font-sans font-bold text-2xl text-gray-800">ini { benda }</h2>
                 </div>
             </div>
         </div>
