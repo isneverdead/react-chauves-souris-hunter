@@ -3,7 +3,7 @@ import Idle from './components/Idle'
 import Counter from './components/Counter'
 import Finding from './components/Finding'
 import Result from './components/Result'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
@@ -14,6 +14,17 @@ function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [loading, setLoading] = useState(false)
+  const isMountedVal = useRef(1);
+  const [videoConstraints, setVideoConstraints] = useState({})
+  // const [facingCamera, setFacingCamera] = useState(true)
+ 
+	
+	// useEffect(() => {
+	// 	isMountedVal.current = 1;
+		
+	// 	return () => {isMountedVal.current = 0;};
+	// })
+
   const runCoco = async () => {
     // 3. TODO - Load network 
     // e.g. const net = await cocossd.load();
@@ -70,21 +81,36 @@ function App() {
   };
   useEffect(() => {
     runCoco()
+    changeCamera(true)
+    
   }, [])
-  const videoConstraints = {
-    facingMode: { exact: "environment" }
-  };
-
+  // const videoConstraints = {
+  //   facingMode: { exact: "environment" }
+  // };
+  const changeCamera = (isFacing) => {
+    if (isFacing) {
+      setVideoConstraints({
+        facingMode: "user"
+      })
+    } else {
+      setVideoConstraints({
+        facingMode: { exact: "environment" }
+      })
+    }
+  }
+  let facingCamera = true
   // const countNumber = 2
   
-  return loading ? <div className="">
-    <h1>Loading</h1>
-  </div> : (
+  return  (
     <div className="App relative flex h-screen bg-gray-200">
       {/* <Idle /> */}
       {/* <Counter count={countNumber}/> */}
-      {/* <Finding /> */}
+      <Finding />
       {/* <Result /> */}
+      {/* <div className="w-full z-20 flex flex-row justify-center bg-yellow-200">
+        <button onClick={() => changeCamera(!facingCamera)} className="px-5 py-2 rounded-md bg-blue-300 z-20 h-16 font-semibold mx-auto">Change Camera</button>
+
+      </div>
       <Webcam
         ref={webcamRef}
         muted={true} 
@@ -95,7 +121,7 @@ function App() {
         ref={canvasRef}
         className="h-full w-full"
 
-      />
+      /> */}
     </div>
   );
 }
