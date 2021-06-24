@@ -5,14 +5,40 @@ import { useSpeechSynthesis } from 'react-speech-kit'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 
-const Finding = ({ handleGameState }) => {
+const Finding = ({ handleGameState, target }) => {
   const webcamRef = useRef(null)
   const canvasRef = useRef(null)
   const [loading, setLoading] = useState(false)
   const isMountedVal = useRef(1)
   const [videoConstraints, setVideoConstraints] = useState({})
   const [benda, setBenda] = useState('')
+  const [targetBenda, setTargetBenda] = useState('default')
+  const [currentBenda, setCurrentBenda] = useState('')
   const { speak } = useSpeechSynthesis()
+  const targetList = [
+      'book',
+      'cat',
+      'banana',
+      'backpack',
+      'umbrella',
+      'tie',
+      'bottle',
+      'cup',
+      'fork',
+      'knife',
+      'spoon',
+      'bowl',
+      'chair',
+      'couch',
+      'bed',
+      'tv',
+      'laptop',
+      'remote',
+      'cell phone',
+      'clock',
+      'scissors',
+      'toothbrush'
+  ]
 
   const runCoco = async () => {
     // 3. TODO - Load network
@@ -25,20 +51,45 @@ const Finding = ({ handleGameState }) => {
     //  Loop and detect hands
     setInterval(() => {
       detect(net)
-    }, 2000)
+    }, 3000)
   }
-  const detectBenda = (item) => {
-    // speak({
-    //   text: 'is this a ' + item,
-    // })
+  const detectBenda = async (item) => {
     const msg = new SpeechSynthesisUtterance()
-    msg.text = 'is this a ' + item
+    // msg.text = `this is not a scissors, this a ${item}. FIND scissors!`
+    // setCurrentBenda(item)
+    console.log(currentBenda)
+    if(target != currentBenda && item.length != 0) {
+      console.log(`yang dicari ${target} yang ketemu ${item}`)
+      msg.text = `yang dicari ${target} yang ketemu ${item}`
+    }
+     else if (item.length != 0) {
+      console.log(`mantab ketemu juga ${item}`)
+      msg.text = `mantab ketemu juga ${item}`
+    }
+    else {
+      console.log('get ready')
+      msg.text = `get ready!`
+
+    }
+    console.log(msg.text)
     window.speechSynthesis.speak(msg)
     // speak({ text: 'person' })
-    if (item == 'scissors') {
+    // console.log('yang dicari ' + target + ' yang ketemu '+item)
+    if (item == target) {
       handleGameState('end')
     }
   }
+  const setTarget = () => {
+    const randomIndex = Math.floor(Math.random() * 11)
+    const target = targetList[randomIndex]
+    setTargetBenda('target')
+    console.log(randomIndex)
+    // console.log(targetBenda)
+  }
+  useEffect(() => {
+    setTargetBenda('diubah')
+    // console.log('exec')
+  }, [])
   const detect = async (net) => {
     // Check data is available
     if (
@@ -63,16 +114,22 @@ const Finding = ({ handleGameState }) => {
       // e.g. const obj = await net.detect(video);
       const obj = await net.detect(video)
       // eslint-disable-next-line
+    //   const target = obj[0].class
+    // console.log(targetBenda)
+
       if (obj.length != 0) {
-        console.log(obj[0].class)
-        if (benda != obj[0].class) {
-          detectBenda(obj[0].class)
-        }
         setBenda(obj[0].class)
-      } else {
+        // console.log(obj[0].class)
+        // console.log(benda)
         if (benda != obj[0].class) {
+
+          // detectBenda(obj[0].class)
+        }
+      } else {
+        // setBenda(obj)
+        if (benda != obj) {
           //   detectBenda(obj[0].class)
-          detectBenda(' ga jelas bendanya')
+          // detectBenda(' ga jelas bendanya')
         }
         setBenda('ga jelas bendanya')
       }
@@ -85,9 +142,16 @@ const Finding = ({ handleGameState }) => {
     }
   }
   useEffect(() => {
+    // setTargetBenda('llll')
+    // console.log(targetBenda)
     changeCamera(true)
     runCoco()
   }, [])
+  useEffect(() => {
+    // console.log(targetBenda)
+    // setCurrentBenda(benda)
+    detectBenda(benda)
+  }, [benda])
   let facingCamera = true
   const changeCamera = (isFacing) => {
     // console.log(facingCamera)

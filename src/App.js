@@ -7,17 +7,44 @@ import { useState, useEffect } from 'react'
 
 function App() {
   const [gameState, setGameState] = useState('')
-
+  
   const changeGameState = (state) => {
     setGameState(state)
   }
+  const targetList = [
+      'book',
+      'cat',
+      'banana',
+      'backpack',
+      'umbrella',
+      'tie',
+      'bottle',
+      'cup',
+      'fork',
+      'knife',
+      'spoon',
+      'bowl',
+      'chair',
+      'couch',
+      'bed',
+      'tv',
+      'laptop',
+      'remote',
+      'cell phone',
+      'clock',
+      'scissors',
+      'toothbrush'
+  ]
+  const [target, setTarget] = useState('')
 
   useEffect(() => {
-    setGameState('finding')
+    setGameState('idle')
   }, [])
 
   useEffect(() => {
     console.log(gameState)
+    setTarget(targetList[Math.floor(Math.random() * 11)])
+
   }, [gameState])
   return (
     <div className="App relative flex h-screen bg-gray-200">
@@ -34,10 +61,10 @@ function App() {
         <Counter handleGameState={(value) => setGameState(value)} />
       ) : null}
       {gameState === 'finding' ? (
-        <Finding handleGameState={(value) => setGameState(value)} />
+        <Finding handleGameState={(value) => setGameState(value)} target={target} />
       ) : null}
       {gameState === 'end' ? (
-        <Result handleGameState={changeGameState} />
+        <Result handleGameState={(value) => setGameState(value)} />
       ) : null}
     </div>
   )
