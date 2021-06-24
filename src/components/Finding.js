@@ -5,7 +5,7 @@ import { useSpeechSynthesis } from 'react-speech-kit'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 
-const Finding = ({ handleGameState, target, handleMission }) => {
+const Finding = ({ handleGameState, target, handleMission, isMobile }) => {
   const webcamRef = useRef(null)
   const canvasRef = useRef(null)
   const [loading, setLoading] = useState(false)
@@ -17,7 +17,6 @@ const Finding = ({ handleGameState, target, handleMission }) => {
   const { speak } = useSpeechSynthesis()
   const [message, setMessage] = useState('Loading....')
   const [counter, setCounter] = useState(30)
-
   
   const targetList = [
       'book',
@@ -43,6 +42,8 @@ const Finding = ({ handleGameState, target, handleMission }) => {
       'scissors',
       'toothbrush'
   ]
+
+  
   const speakWrongTarget = (target, item) => {
     const list1 = [
       `i'm looking for `,
@@ -55,13 +56,14 @@ const Finding = ({ handleGameState, target, handleMission }) => {
       ` not a `,
       `? this is a `,
       `? now!`,
-      `? please.`
+      `? please.`,
+      `? not a `
     ]
     const randomIndex = Math.floor(Math.random() * 8)
     console.log(randomIndex)
     switch(randomIndex) {
       case 0: 
-        return  list1[1] + target + list2[1] + item
+        return  list1[1] + target + list2[4] + item
       case 1: 
         return  list1[2] + item
       case 2:
@@ -106,32 +108,41 @@ const Finding = ({ handleGameState, target, handleMission }) => {
     }, 3000)
   }
   const detectBenda = async (item) => {
-    const msg = new SpeechSynthesisUtterance()
+    // const msg = new SpeechSynthesisUtterance()
+    const synth = window.speechSynthesis;
+    let voices = [];
+    voices = synth.getVoices();
+    const speakText = new SpeechSynthesisUtterance();
+    speakText.voice = voices[2]
+    
+
     // msg.text = `this is not a scissors, this a ${item}. FIND scissors!`
     // setCurrentBenda(item)
     console.log(currentBenda)
     if (item == 'What is this?') {
-      msg.text = `What is this?.`
+      speakText.text = `What is this?.`
     }
     else if(target != currentBenda && item.length != 0 && item != target) {
       console.log(`I'M looking for ${target} not a ${item}`)
-      // msg.text = `I'M looking for ${target} not a ${item}`
+      // speakText.text = `I'M looking for ${target} not a ${item}`
       
-      msg.text = speakWrongTarget(target, item)
+      speakText.text = speakWrongTarget(target, item)
     }
      else if (item == target && item.length != 0) {
       console.log(`finally, you found that ${item}.`)
-      msg.text = `finally, you found that ${item}.`
+      speakText.text = `finally, you found that ${item}.`
     }
     else {
       console.log('get ready')
-      msg.text = `get ready!`
+      speakText.text = `get ready!`
 
     }
-    console.log(msg.text)
-    setMessage(msg.text)
-    window.speechSynthesis.cancel()
-    window.speechSynthesis.speak(msg)
+    console.log(speakText.text)
+    setMessage(speakText.text)
+    // window.speechSynthesis.cancel()
+    // window.speechSynthesis.speak(msg)
+    synth.cancel()
+    synth.speak(speakText)
     // speak({ text: 'person' })
     // console.log('yang dicari ' + target + ' yang ketemu '+item)
     if (item == target) {
@@ -216,13 +227,13 @@ const Finding = ({ handleGameState, target, handleMission }) => {
   useEffect(() => {
     // setTargetBenda('llll')
     // console.log(targetBenda)
-    changeCamera(true)
-    changeCamera(true)
+    changeCamera(!isMobile)
     runCoco()
   }, [])
   useEffect(() => {
     // console.log(targetBenda)
     // setCurrentBenda(benda)
+    console.log(facingCamera)
     detectBenda(benda)
   }, [benda])
   let facingCamera = true
