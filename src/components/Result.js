@@ -14,7 +14,7 @@ const Result = ({handleGameState, isComplete}) => {
                     Play Again
                 </button>
             </div>
-            <h1 className="">Lorem.</h1>
+            <h1 className="mb-5">Chauves-souris hunter - 2021</h1>
         </div>     
         </>
     )
