@@ -7,21 +7,20 @@ import { useState, useEffect } from 'react'
 
 function App() {
   const [gameState, setGameState] = useState('')
-  
-  const changeGameState = (state) => {
-    setGameState(state)
-  }
+  const [missionComplete, setMissionComplete] = useState(false)
   const targetList = [
       'book',
       'cat',
       'banana',
       'backpack',
       'umbrella',
+      'cell phone',
       'tie',
+      'scissors',
       'bottle',
       'cup',
-      'fork',
       'knife',
+      'banana',
       'spoon',
       'bowl',
       'chair',
@@ -29,7 +28,6 @@ function App() {
       'bed',
       'tv',
       'laptop',
-      'remote',
       'cell phone',
       'clock',
       'scissors',
@@ -43,7 +41,7 @@ function App() {
 
   useEffect(() => {
     console.log(gameState)
-    setTarget(targetList[Math.floor(Math.random() * 11)])
+    setTarget(targetList[Math.floor(Math.random() * 23)])
 
   }, [gameState])
   return (
@@ -61,10 +59,10 @@ function App() {
         <Counter handleGameState={(value) => setGameState(value)} />
       ) : null}
       {gameState === 'finding' ? (
-        <Finding handleGameState={(value) => setGameState(value)} target={target} />
+        <Finding handleGameState={(value) => setGameState(value)} handleMission={(value) => setMissionComplete(value)} target={target} />
       ) : null}
       {gameState === 'end' ? (
-        <Result handleGameState={(value) => setGameState(value)} />
+        <Result handleGameState={(value) => setGameState(value)} isComplete={missionComplete} />
       ) : null}
     </div>
   )
